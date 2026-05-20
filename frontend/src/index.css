@@ -1,0 +1,7 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+/* Custom base styles can be added here */
+body {
+  background-color: #f3f4f6; /* gray-100 */
+}
