@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
-const ProductCarousel = ({ title, icon, products, loading = false }) => {
+const ProductCarousel = ({ title, icon, products, loading = false, detailBasePath = '' }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [canScroll, setCanScroll] = useState(false);
   const carouselRef = useRef(null);
@@ -55,7 +56,10 @@ const ProductCarousel = ({ title, icon, products, loading = false }) => {
             {visibleProducts.map((product) => (
               <div key={product.id} className="carousel-item">
                 <div className="carousel-product-card">
-                  <div className="carousel-product-image">
+                  <Link
+                    to={detailBasePath ? `${detailBasePath}/${product.id}` : '#'}
+                    className="carousel-product-image"
+                  >
                     <img
                       src={product.image_url || '/images/placeholder.jpg'}
                       alt={product.name}
@@ -63,9 +67,13 @@ const ProductCarousel = ({ title, icon, products, loading = false }) => {
                     <span className="carousel-product-badge">
                       {product.quantity_sold > 0 ? '🔥 Hot' : 'New'}
                     </span>
-                  </div>
+                  </Link>
                   <div className="carousel-product-info">
-                    <h5>{product.name}</h5>
+                    <h5>
+                      <Link to={detailBasePath ? `${detailBasePath}/${product.id}` : '#'}>
+                        {product.name}
+                      </Link>
+                    </h5>
                     <p className="carousel-category">
                       {product.category.toUpperCase()}
                     </p>

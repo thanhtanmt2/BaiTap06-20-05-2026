@@ -23,6 +23,8 @@ const LogoutIcon = () => (
 const userNavItems = [
   { label: 'Hồ sơ', path: '/user/profile', icon: <UserCircleIcon /> },
   { label: 'Cửa hàng', path: '/user/shop', icon: <UsersIcon /> },
+  { label: 'Giỏ hàng', path: '/user/cart', icon: <UsersIcon /> },
+  { label: 'Đơn hàng', path: '/user/orders', icon: <UsersIcon /> },
   { label: 'Cửa hàng của tôi', path: '/user/my-shop', icon: <UsersIcon /> },
   { label: 'Vận chuyển', path: '/user/shipping', icon: <UsersIcon /> },
 ];
@@ -30,6 +32,7 @@ const userNavItems = [
 const adminNavItems = [
   { label: 'Hồ sơ', path: '/admin/profile', icon: <UserCircleIcon /> },
   { label: 'Quản lý người dùng', path: '/admin/users', icon: <UsersIcon /> },
+  { label: 'Đơn hàng', path: '/admin/orders', icon: <UsersIcon /> },
   { label: 'Duyệt đăng ký', path: '/admin/approvals', icon: <UsersIcon /> },
 ];
 

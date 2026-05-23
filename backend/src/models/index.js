@@ -4,6 +4,9 @@ const OTP = require('./OTP');
 const Product = require('./Product');
 const Shop = require('./Shop');
 const ShippingRequest = require('./ShippingRequest');
+const CartItem = require('./CartItem');
+const Order = require('./Order');
+const OrderItem = require('./OrderItem');
 
 // Define Associations
 User.hasOne(Profile, {
@@ -50,11 +53,59 @@ Product.belongsTo(Shop, {
   foreignKey: 'shop_id'
 });
 
+User.hasMany(CartItem, {
+  foreignKey: 'user_id',
+  onDelete: 'CASCADE'
+});
+
+CartItem.belongsTo(User, {
+  foreignKey: 'user_id'
+});
+
+Product.hasMany(CartItem, {
+  foreignKey: 'product_id',
+  onDelete: 'CASCADE'
+});
+
+CartItem.belongsTo(Product, {
+  foreignKey: 'product_id'
+});
+
+User.hasMany(Order, {
+  foreignKey: 'user_id',
+  onDelete: 'CASCADE'
+});
+
+Order.belongsTo(User, {
+  foreignKey: 'user_id'
+});
+
+Order.hasMany(OrderItem, {
+  foreignKey: 'order_id',
+  onDelete: 'CASCADE'
+});
+
+OrderItem.belongsTo(Order, {
+  foreignKey: 'order_id'
+});
+
+Product.hasMany(OrderItem, {
+  foreignKey: 'product_id',
+  onDelete: 'SET NULL'
+});
+
+OrderItem.belongsTo(Product, {
+  foreignKey: 'product_id'
+});
+
 module.exports = {
   User,
   Profile,
   OTP,
   Product,
   Shop,
-  ShippingRequest
+  ShippingRequest,
+  CartItem,
+  Order,
+  OrderItem
 };

@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
-
 .shop-container {
   --ink: #1f1c1a;
   --muted: #6d665f;
@@ -321,6 +319,28 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+.product-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.detail-btn {
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(31, 28, 26, 0.12);
+  font-size: 0.85em;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--ink);
+  background: transparent;
+  transition: all 0.2s ease;
+}
+
+.detail-btn:hover {
+  background: var(--sand);
+  border-color: rgba(201, 111, 60, 0.3);
+}
   transition: transform 0.3s;
 }
 

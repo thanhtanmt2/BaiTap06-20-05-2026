@@ -16,7 +16,12 @@ import AdminUsers from './pages/admin/AdminUsers';
 import AdminApprovals from './pages/admin/AdminApprovals';
 import MyShop from './pages/user/MyShop';
 import Shipping from './pages/user/Shipping';
+import Cart from './pages/user/Cart';
+import Orders from './pages/user/Orders';
+import OrderDetail from './pages/user/OrderDetail';
+import ProductDetail from './pages/ProductDetail';
 import ProtectedRoute from './routes/ProtectedRoute';
+import AdminOrders from './pages/admin/AdminOrders';
 
 // Redirect /profile đến đúng dashboard theo role
 const RoleRedirect = () => {
@@ -66,6 +71,10 @@ const App = () => {
       >
         <Route path="profile" element={<UserProfile />} />
         <Route path="shop" element={<Shop />} />
+        <Route path="shop/:id" element={<ProductDetail />} />
+        <Route path="cart" element={<Cart />} />
+        <Route path="orders" element={<Orders />} />
+        <Route path="orders/:id" element={<OrderDetail />} />
         <Route path="my-shop" element={<MyShop />} />
         <Route path="shipping" element={<Shipping />} />
       </Route>
@@ -81,6 +90,7 @@ const App = () => {
       >
         <Route path="profile" element={<AdminProfile />} />
         <Route path="users" element={<AdminUsers />} />
+        <Route path="orders" element={<AdminOrders />} />
         <Route path="approvals" element={<AdminApprovals />} />
       </Route>
     </Routes>

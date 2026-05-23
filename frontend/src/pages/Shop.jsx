@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import axiosClient from '../services/axiosClient';
 import ProductCarousel from '../components/ProductCarousel';
 import './Shop.css';
@@ -25,6 +26,7 @@ const Shop = () => {
   const [useLazyLoad, setUseLazyLoad] = useState(false);
   const observerTarget = useRef(null);
   const formatPrice = (value) => new Intl.NumberFormat('vi-VN').format(value || 0);
+  const [cartMessage, setCartMessage] = useState('');
 
   const itemsPerPage = 12;
 
@@ -90,6 +92,18 @@ const Shop = () => {
   useEffect(() => {
     fetchProducts();
   }, [search, selectedCategory, selectedSize, selectedColor, priceRange, sortBy, currentPage]);
+
+  const handleAddToCart = async (productId) => {
+    setCartMessage('');
+    try {
+      const { data } = await axiosClient.post('/cart/items', { product_id: productId, quantity: 1 });
+      if (data.success) {
+        setCartMessage(data.message || 'Da them vao gio hang');
+      }
+    } catch (error) {
+      setCartMessage(error.response?.data?.message || 'Them vao gio hang that bai');
+    }
+  };
 
   // Setup Lazy Loading Observer
   useEffect(() => {
@@ -183,22 +197,22 @@ const Shop = () => {
       <div className="shop-header">
         <div className="shop-hero">
           <div className="shop-hero-text">
-            <p className="shop-eyebrow">New season drop</p>
-            <h2>Curated essentials for every day</h2>
-            <p className="shop-subtitle">Modern staples, soft layers, and standout pieces you can wear on repeat.</p>
+            <p className="shop-eyebrow">Bo suu tap moi</p>
+            <h2>Tuyen chon do co ban moi ngay</h2>
+            <p className="shop-subtitle">Trang phuc toi gian, mem mai va de phoi do cho moi ngay.</p>
           </div>
           <div className="shop-hero-metrics">
             <div className="metric-card">
               <span className="metric-value">120+</span>
-              <span className="metric-label">Styles curated</span>
+              <span className="metric-label">Mau da chon</span>
             </div>
             <div className="metric-card">
               <span className="metric-value">4.8★</span>
-              <span className="metric-label">Average rating</span>
+              <span className="metric-label">Danh gia trung binh</span>
             </div>
             <div className="metric-card">
               <span className="metric-value">24h</span>
-              <span className="metric-label">Fast dispatch</span>
+              <span className="metric-label">Giao nhanh</span>
             </div>
           </div>
         </div>
@@ -207,16 +221,18 @@ const Shop = () => {
       {/* Top Carousels */}
       <section className="carousels-section">
         <ProductCarousel
-          title="Top 10 Best Sellers"
+          title="Top 10 ban chay"
           icon="🔥"
           products={bestSellers}
           loading={loadingBestSellers}
+          detailBasePath="/user/shop"
         />
         <ProductCarousel
-          title="Top 10 Most Viewed"
+          title="Top 10 xem nhieu"
           icon="👀"
           products={mostViewed}
           loading={loadingMostViewed}
+          detailBasePath="/user/shop"
         />
       </section>
 
@@ -224,18 +240,18 @@ const Shop = () => {
         {/* Sidebar Filters */}
         <aside className="shop-sidebar">
           <div className="filter-section">
-            <h3>Filters</h3>
+            <h3>Bo loc</h3>
             <button className="clear-filters-btn" onClick={clearFilters}>
-              Clear All
+              Xoa bo loc
             </button>
           </div>
 
           {/* Search */}
           <div className="filter-group">
-            <label>Search</label>
+            <label>Tim kiem</label>
             <input
               type="text"
-              placeholder="Search products..."
+              placeholder="Tim san pham..."
               value={search}
               onChange={handleSearchChange}
               className="search-input"
@@ -244,13 +260,13 @@ const Shop = () => {
 
           {/* Category Filter */}
           <div className="filter-group">
-            <label>Category</label>
+            <label>Danh muc</label>
             <div className="category-options">
               <button
                 className={`category-btn ${selectedCategory === '' ? 'active' : ''}`}
                 onClick={() => handleCategoryChange('')}
               >
-                All ({categories.reduce((sum, cat) => sum + cat.count, 0)})
+                Tat ca ({categories.reduce((sum, cat) => sum + cat.count, 0)})
               </button>
               {categories.map((cat) => (
                 <button
@@ -266,13 +282,13 @@ const Shop = () => {
 
           {/* Size Filter */}
           <div className="filter-group">
-            <label>Size</label>
+            <label>Kich co</label>
             <div className="size-options">
               <button
                 className={`size-btn ${selectedSize === '' ? 'active' : ''}`}
                 onClick={() => handleSizeChange('')}
               >
-                All
+                Tat ca
               </button>
               {sizes.map((size) => (
                 <button
@@ -288,10 +304,10 @@ const Shop = () => {
 
           {/* Color Filter */}
           <div className="filter-group">
-            <label>Color</label>
+            <label>Mau sac</label>
             <input
               type="text"
-              placeholder="Search color..."
+              placeholder="Nhap mau sac..."
               value={selectedColor}
               onChange={handleColorChange}
               className="color-input"
@@ -300,7 +316,7 @@ const Shop = () => {
 
           {/* Price Filter */}
           <div className="filter-group">
-            <label>Price Range</label>
+            <label>Khoang gia</label>
             <div className="price-inputs">
               <input
                 type="number"
@@ -312,7 +328,7 @@ const Shop = () => {
                   setCurrentPage(1);
                 }}
                 className="price-input"
-                placeholder="Min"
+                placeholder="Tu"
               />
               <span className="price-separator">-</span>
               <input
@@ -325,21 +341,21 @@ const Shop = () => {
                   setCurrentPage(1);
                 }}
                 className="price-input"
-                placeholder="Max"
+                placeholder="Den"
               />
             </div>
           </div>
 
           {/* Sort */}
           <div className="filter-group">
-            <label>Sort By</label>
+            <label>Sap xep</label>
             <select value={sortBy} onChange={handleSortChange} className="sort-select">
-              <option value="newest">Newest</option>
-              <option value="price_low">Price: Low to High</option>
-              <option value="price_high">Price: High to Low</option>
-              <option value="rating">Highest Rated</option>
-              <option value="best_seller">Best Sellers</option>
-              <option value="trending">Trending</option>
+              <option value="newest">Moi nhat</option>
+              <option value="price_low">Gia: Thap den cao</option>
+              <option value="price_high">Gia: Cao den thap</option>
+              <option value="rating">Danh gia cao</option>
+              <option value="best_seller">Ban chay</option>
+              <option value="trending">Xu huong</option>
             </select>
           </div>
         </aside>
@@ -358,40 +374,51 @@ const Shop = () => {
                   setProducts([]);
                 }}
               />
-              Use Lazy Loading (vs Pagination)
+              Cuon vo han (thay phan trang)
             </label>
           </div>
+          {cartMessage ? (
+            <div className="text-sm text-gray-600 bg-white rounded-xl border border-gray-100 px-4 py-2">
+              {cartMessage}
+            </div>
+          ) : null}
 
           {/* Products Grid */}
           <div className="products-section">
             {loading && products.length === 0 ? (
-              <div className="loading">Loading products...</div>
+              <div className="loading">Dang tai san pham...</div>
             ) : products.length === 0 ? (
-              <div className="no-products">No products found</div>
+              <div className="no-products">Khong tim thay san pham</div>
             ) : (
               <div className="products-grid">
                 {products.map((product) => (
                   <div key={product.id} className="product-card">
                     <div className="product-image">
-                      <img
-                        src={product.image_url || '/images/placeholder.jpg'}
-                        alt={product.name}
-                      />
+                      <Link to={`/user/shop/${product.id}`}>
+                        <img
+                          src={product.image_url || '/images/placeholder.jpg'}
+                          alt={product.name}
+                        />
+                      </Link>
                       <span className="product-badge">
-                        {product.quantity_sold_week > 0 ? `🔥 Hot` : 'New'}
+                        {product.quantity_sold_week > 0 ? '🔥 Noi bat' : 'Moi'}
                       </span>
                     </div>
                     <div className="product-info">
-                      <h4>{product.name}</h4>
+                      <h4>
+                        <Link to={`/user/shop/${product.id}`}>
+                          {product.name}
+                        </Link>
+                      </h4>
                       <p className="product-category">
                         {product.category.toUpperCase()} • {product.size}
                       </p>
-                      <p className="product-color">Color: {product.color}</p>
+                      <p className="product-color">Mau sac: {product.color}</p>
 
                       {/* Stats */}
                       <div className="product-stats">
                         <span className="stat">
-                          📦 {product.quantity_stock} in stock
+                          📦 {product.quantity_stock} ton kho
                         </span>
                         <span className="stat">
                           ⭐ {Number(product.rating || 0).toFixed(1)} ({product.rating_count})
@@ -401,14 +428,21 @@ const Shop = () => {
                       {/* Sales Info */}
                       <div className="product-sales">
                         <small>
-                          Sold: {product.quantity_sold} | Week: {product.quantity_sold_week} | Day:{' '}
+                          Da ban: {product.quantity_sold} | Tuan: {product.quantity_sold_week} | Hom nay:{' '}
                           {product.quantity_sold_day}
                         </small>
                       </div>
 
                       <div className="product-footer">
                         <span className="product-price">{formatPrice(product.price)} Z</span>
-                        <button className="add-cart-btn">Add to Cart</button>
+                        <div className="product-actions">
+                          <Link to={`/user/shop/${product.id}`} className="detail-btn">
+                            Xem chi tiet
+                          </Link>
+                          <button className="add-cart-btn" onClick={() => handleAddToCart(product.id)}>
+                            Them vao gio
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -419,7 +453,7 @@ const Shop = () => {
             {/* Lazy Load Observer */}
             {useLazyLoad && products.length > 0 && (
               <div ref={observerTarget} className="lazy-load-observer">
-                {loading && <div className="loading-more">Loading more products...</div>}
+                {loading && <div className="loading-more">Dang tai them san pham...</div>}
               </div>
             )}
 
@@ -431,11 +465,11 @@ const Shop = () => {
                   onClick={() => setCurrentPage(currentPage - 1)}
                   className="pagination-btn"
                 >
-                  ← Previous
+                  ← Truoc
                 </button>
 
                 <div className="page-info">
-                  Page {currentPage} of {pagination.totalPages}
+                  Trang {currentPage} / {pagination.totalPages}
                 </div>
 
                 <button
@@ -443,7 +477,7 @@ const Shop = () => {
                   onClick={() => setCurrentPage(currentPage + 1)}
                   className="pagination-btn"
                 >
-                  Next →
+                  Tiep →
                 </button>
               </div>
             )}
